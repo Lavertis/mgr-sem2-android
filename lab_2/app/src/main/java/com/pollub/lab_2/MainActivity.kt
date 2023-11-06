@@ -2,6 +2,7 @@ package com.pollub.lab_2
 
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -34,14 +35,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -59,7 +59,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ProfileScreenInitial()
+                    ProfileScreen()
                 }
             }
         }
@@ -67,10 +67,10 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun ProfileImageWithPicker(profileImageUri: Uri?, selectImageOnClick: () -> Unit) {
+private fun ProfileImageWithPicker(profileImageUri: Comparable<*>, selectImageOnClick: () -> Unit) {
     Box {
         AsyncImage(
-            model = profileImageUri ?: R.drawable.baseline_question_mark_24,
+            model = profileImageUri,
             contentDescription = "Profile image",
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -100,10 +100,11 @@ private fun ProfileImageWithPicker(profileImageUri: Uri?, selectImageOnClick: ()
 @Composable
 fun OutlinedTextFieldWithError(
     state: MutableState<String>,
-    isError: Boolean,
     errorText: String?,
-    label: String?
+    label: String?,
+    keyboardType: KeyboardType = KeyboardType.Text,
 ) {
+    val isError = errorText != null
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = state.value,
@@ -111,7 +112,7 @@ fun OutlinedTextFieldWithError(
         label = { Text(label ?: "") },
         singleLine = true,
         isError = isError,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         supportingText = { Text(if (isError && errorText != null) errorText else "") },
         trailingIcon = { if (isError) Icon(Icons.Rounded.Warning, contentDescription = null) },
     )
@@ -119,19 +120,31 @@ fun OutlinedTextFieldWithError(
 
 
 @Composable
-fun ProfileScreenInitial() {
+fun ProfileScreen() {
+    val context = LocalContext.current
+    val errorText = rememberSaveable { mutableStateOf(mapOf<String, String?>()) }
+
     val name = rememberSaveable { mutableStateOf("") }
     val email = rememberSaveable { mutableStateOf("") }
     val colorCount = rememberSaveable { mutableStateOf("") }
     val profileImageUri = rememberSaveable { mutableStateOf<Uri?>(null) }
 
-    var isNameError by rememberSaveable { mutableStateOf(false) }
-    var isEmailError by rememberSaveable { mutableStateOf(false) }
-    var isColorCountError by rememberSaveable { mutableStateOf(false) }
+    fun setFieldError(fieldName: String, errorMessage: String? = null) {
+        errorText.value += (fieldName to errorMessage)
+    }
 
-    var nameErrorText by rememberSaveable { mutableStateOf<String?>(null) }
-    var emailErrorText by rememberSaveable { mutableStateOf<String?>(null) }
-    var colorCountErrorText by rememberSaveable { mutableStateOf<String?>(null) }
+    fun validateFields(): Boolean {
+        val formValidator = FormValidator()
+        formValidator.validateName(name.value) { setFieldError("name", it) }
+        formValidator.validateEmail(email.value) { setFieldError("email", it) }
+        formValidator.validateColorCount(
+            colorCount.value,
+            min = 5,
+            max = 10
+        ) { setFieldError("colorCount", it) }
+
+        return errorText.value.values.all { it == null }
+    }
 
     val imagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
@@ -140,42 +153,6 @@ fun ProfileScreenInitial() {
                 profileImageUri.value = selectedUri
             }
         })
-
-    fun validateName() {
-        var isError = true
-        when {
-            name.value.isBlank() -> nameErrorText = "Name cannot be empty"
-            else -> isError = false
-        }
-        isNameError = isError
-    }
-
-    fun validateEmail() {
-        val emailPattern = Regex("^[A-Za-z](.*)(@)(.+)(\\.)(.+)")
-        var isError = true
-        when {
-            email.value.isBlank() -> emailErrorText = "E-mail cannot be empty"
-            !emailPattern.matches(email.value) -> emailErrorText = "Invalid e-mail format"
-            else -> isError = false
-        }
-        isEmailError = isError
-    }
-
-    fun validateColorCount() {
-        var isError = true
-        when (colorCount.value.toIntOrNull()) {
-            null -> colorCountErrorText = "Please enter a number"
-            !in 5..10 -> colorCountErrorText = "Please enter a number between 5 and 10"
-            else -> isError = false
-        }
-        isColorCountError = isError
-    }
-
-    fun validate() {
-        validateName()
-        validateEmail()
-        validateColorCount()
-    }
 
     val verticalSpaceBetweenFields = 12.dp
 
@@ -193,42 +170,41 @@ fun ProfileScreenInitial() {
             modifier = Modifier.padding(bottom = 48.dp)
         )
         ProfileImageWithPicker(
-            profileImageUri = profileImageUri.value,
-            selectImageOnClick = {
-                imagePicker.launch(
-                    PickVisualMediaRequest(
-                        ActivityResultContracts.PickVisualMedia.ImageOnly
-                    )
+            profileImageUri = profileImageUri.value ?: R.drawable.baseline_question_mark_24
+        ) {
+            imagePicker.launch(
+                PickVisualMediaRequest(
+                    ActivityResultContracts.PickVisualMedia.ImageOnly
                 )
-            }
-        )
+            )
+        }
         Spacer(modifier = Modifier.height(verticalSpaceBetweenFields))
         OutlinedTextFieldWithError(
             state = name,
-            isError = isNameError,
-            errorText = nameErrorText,
-            label = "Name"
+            errorText = errorText.value["name"],
+            label = "Name",
+            keyboardType = KeyboardType.Text
         )
         Spacer(modifier = Modifier.height(verticalSpaceBetweenFields))
         OutlinedTextFieldWithError(
             state = email,
-            isError = isEmailError,
-            errorText = emailErrorText,
-            label = "E-mail"
+            errorText = errorText.value["email"],
+            label = "E-mail",
+            keyboardType = KeyboardType.Email
         )
         Spacer(modifier = Modifier.height(verticalSpaceBetweenFields))
         OutlinedTextFieldWithError(
             state = colorCount,
-            isError = isColorCountError,
-            errorText = colorCountErrorText,
-            label = "Number of colors"
+            errorText = errorText.value["colorCount"],
+            label = "Number of colors",
+            keyboardType = KeyboardType.Number
         )
         Spacer(modifier = Modifier.height(18.dp))
         Button(
             onClick = {
-                validate()
-                if (!isNameError && !isEmailError && !isColorCountError) {
-                    println("Form is valid")
+                val isFormValid = validateFields()
+                if (isFormValid) {
+                    Toast.makeText(context, "Form is valid", Toast.LENGTH_SHORT).show()
                 }
             },
             modifier = Modifier.fillMaxWidth(),
@@ -242,6 +218,6 @@ fun ProfileScreenInitial() {
 @Composable
 fun GreetingPreview() {
     Lab_2Theme {
-        ProfileScreenInitial()
+        ProfileScreen()
     }
 }
