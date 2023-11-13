@@ -105,9 +105,14 @@ fun GameScreen() {
     )
     val trueColors = rememberSaveable { selectRandomColors(allColors) }
     val gameRowStates = remember { mutableStateListOf(GameRowState()) }
+    val isGameFinished = remember { mutableStateOf(false) }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = "Your score: 1", style = MaterialTheme.typography.displayLarge)
+        Text(
+            text = "Your score: ${gameRowStates.size}",
+            style = MaterialTheme.typography.displayLarge,
+            modifier = Modifier.padding(bottom = 10.dp)
+        )
         LazyColumn(verticalArrangement = Arrangement.spacedBy(5.dp)) {
             items(gameRowStates.size) { index ->
                 GameRow(
@@ -128,9 +133,26 @@ fun GameScreen() {
                             selectedColors = gameRowStates[index].selectedColors
                         )
                         gameRowStates[index].clickable.value = false
-                        gameRowStates.add(GameRowState())
+
+                        if (gameRowStates[index].feedbackColors.all { it == Color.Red }) {
+                            isGameFinished.value = true
+                        } else {
+                            gameRowStates.add(GameRowState())
+                        }
                     }
                 )
+            }
+        }
+        if (isGameFinished.value) {
+            Button(
+                onClick = {
+                    gameRowStates.clear()
+                    gameRowStates.add(GameRowState())
+                    isGameFinished.value = false
+                },
+                modifier = Modifier.padding(top = 15.dp)
+            ) {
+                Text(text = "Play again")
             }
         }
     }
