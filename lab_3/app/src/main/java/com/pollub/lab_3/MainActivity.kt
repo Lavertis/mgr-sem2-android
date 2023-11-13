@@ -31,6 +31,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -82,8 +84,8 @@ fun selectNextAvailableColor(
 fun checkColors(
     trueColors: List<Color>,
     selectedColors: List<Color>
-): List<Color> {
-    val feedbackColors = ArrayList<Color>()
+): SnapshotStateList<Color> {
+    val feedbackColors = mutableStateListOf<Color>()
     for (i in trueColors.indices) {
         if (trueColors[i] == selectedColors[i]) {
             feedbackColors.add(Color.Red)
@@ -102,29 +104,31 @@ fun GameScreen() {
         Color.Red, Color.Green, Color.Blue, Color.Yellow, Color.Magenta, Color.Cyan
     )
     val trueColors = rememberSaveable { selectRandomColors(allColors) }
-    val selectedColors = remember {
-        mutableStateListOf(Color.White, Color.White, Color.White, Color.White)
-    }
-    val feedbackColors = remember {
-        mutableStateOf(listOf(Color.White, Color.White, Color.White, Color.White))
-    }
-    val clickable = remember { mutableStateOf(true) }
+    val gameRowStates = remember { mutableStateListOf(GameRowState()) }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = "Your score: 1", style = MaterialTheme.typography.displayLarge)
-        LazyColumn {
-            item {
+        LazyColumn(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+            items(gameRowStates.size) { index ->
                 GameRow(
-                    selectedColors = selectedColors,
-                    feedbackColors = feedbackColors.value,
-                    clickable = clickable.value,
+                    selectedColors = gameRowStates[index].selectedColors,
+                    feedbackColors = gameRowStates[index].feedbackColors,
+                    clickable = gameRowStates[index].clickable.value,
                     onSelectColorClick = {
-                        selectedColors[it] =
-                            selectNextAvailableColor(allColors, selectedColors, selectedColors[it])
+                        gameRowStates[index].selectedColors[it] =
+                            selectNextAvailableColor(
+                                allColors,
+                                gameRowStates[index].selectedColors,
+                                gameRowStates[index].selectedColors[it]
+                            )
                     },
                     onCheckClick = {
-                        feedbackColors.value = checkColors(trueColors, selectedColors)
-                        clickable.value = false
+                        gameRowStates[index].feedbackColors = checkColors(
+                            trueColors = trueColors,
+                            selectedColors = gameRowStates[index].selectedColors
+                        )
+                        gameRowStates[index].clickable.value = false
+                        gameRowStates.add(GameRowState())
                     }
                 )
             }
