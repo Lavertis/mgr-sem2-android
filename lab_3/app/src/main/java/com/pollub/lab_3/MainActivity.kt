@@ -113,7 +113,12 @@ fun GameScreen() {
             style = MaterialTheme.typography.displayLarge,
             modifier = Modifier.padding(bottom = 10.dp)
         )
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            modifier = Modifier
+                .padding(bottom = 10.dp)
+                .weight(1f)
+        ) {
             items(gameRowStates.size) { index ->
                 GameRow(
                     selectedColors = gameRowStates[index].selectedColors,
@@ -150,7 +155,7 @@ fun GameScreen() {
                     gameRowStates.add(GameRowState())
                     isGameFinished.value = false
                 },
-                modifier = Modifier.padding(top = 15.dp)
+                modifier = Modifier.padding(bottom = 10.dp)
             ) {
                 Text(text = "Play again")
             }
