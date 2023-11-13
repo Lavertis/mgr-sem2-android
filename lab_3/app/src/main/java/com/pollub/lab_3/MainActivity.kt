@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -109,6 +108,7 @@ fun GameScreen() {
     val feedbackColors = remember {
         mutableStateOf(listOf(Color.White, Color.White, Color.White, Color.White))
     }
+    val clickable = remember { mutableStateOf(true) }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = "Your score: 1", style = MaterialTheme.typography.displayLarge)
@@ -117,13 +117,14 @@ fun GameScreen() {
                 GameRow(
                     selectedColors = selectedColors,
                     feedbackColors = feedbackColors.value,
-                    clickable = true,
+                    clickable = clickable.value,
                     onSelectColorClick = {
                         selectedColors[it] =
                             selectNextAvailableColor(allColors, selectedColors, selectedColors[it])
                     },
                     onCheckClick = {
                         feedbackColors.value = checkColors(trueColors, selectedColors)
+                        clickable.value = false
                     }
                 )
             }
@@ -132,7 +133,7 @@ fun GameScreen() {
 }
 
 @Composable
-fun CircularButton(onClick: () -> Unit, color: Color, modifier: Modifier = Modifier) {
+fun CircularButton(color: Color, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
     Button(
         onClick = onClick,
         modifier = modifier
@@ -142,17 +143,19 @@ fun CircularButton(onClick: () -> Unit, color: Color, modifier: Modifier = Modif
             containerColor = color,
             contentColor = MaterialTheme.colorScheme.onBackground
         )
-    ) {
-
-    }
+    ) {}
 }
 
 @Composable
-fun SelectableColorsRow(colors: List<Color>, clickAction: (Int) -> Unit) {
+fun SelectableColorsRow(colors: List<Color>, clickAction: ((Int) -> Unit)?) {
     Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
         colors.forEachIndexed { index, color ->
             CircularButton(
-                onClick = { clickAction(index) },
+                onClick = {
+                    if (clickAction != null) {
+                        clickAction(index)
+                    }
+                },
                 color = color,
                 modifier = Modifier.size(50.dp)
             )
@@ -193,7 +196,10 @@ fun GameRow(
     onCheckClick: () -> Unit
 ) {
     Row {
-        SelectableColorsRow(colors = selectedColors, clickAction = onSelectColorClick)
+        SelectableColorsRow(
+            colors = selectedColors,
+            clickAction = if (clickable) onSelectColorClick else { _ -> }
+        )
         Spacer(modifier = Modifier.padding(horizontal = 2.5.dp))
         IconButton(
             onClick = onCheckClick,
@@ -201,6 +207,7 @@ fun GameRow(
                 .size(50.dp)
                 .clip(CircleShape),
             colors = IconButtonDefaults.filledIconButtonColors(),
+            enabled = clickable && !selectedColors.contains(Color.White)
         ) {
             Icon(Icons.Default.Check, contentDescription = null, tint = Color.White)
         }
