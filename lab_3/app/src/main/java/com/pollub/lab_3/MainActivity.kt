@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -30,9 +31,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pollub.lab_3.ui.theme.Lab_3Theme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -107,6 +109,9 @@ fun GameScreen() {
     val gameRowStates = remember { mutableStateListOf(GameRowState()) }
     val isGameFinished = remember { mutableStateOf(false) }
 
+    val lazyListState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = "Your score: ${gameRowStates.size}",
@@ -117,7 +122,8 @@ fun GameScreen() {
             verticalArrangement = Arrangement.spacedBy(5.dp),
             modifier = Modifier
                 .padding(bottom = 10.dp)
-                .weight(1f)
+                .weight(1f),
+            state = lazyListState
         ) {
             items(gameRowStates.size) { index ->
                 GameRow(
@@ -143,6 +149,9 @@ fun GameScreen() {
                             isGameFinished.value = true
                         } else {
                             gameRowStates.add(GameRowState())
+                            coroutineScope.launch {
+                                lazyListState.scrollToItem(gameRowStates.size - 1)
+                            }
                         }
                     }
                 )
