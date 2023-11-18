@@ -105,7 +105,7 @@ fun GameScreen() {
     val allColors = listOf(
         Color.Red, Color.Green, Color.Blue, Color.Yellow, Color.Magenta, Color.Cyan
     )
-    val trueColors = rememberSaveable { selectRandomColors(allColors) }
+    val trueColors = remember { mutableStateOf(selectRandomColors(allColors)) }
     val gameRowStates = remember { mutableStateListOf(GameRowState()) }
     val isGameFinished = remember { mutableStateOf(false) }
 
@@ -140,7 +140,7 @@ fun GameScreen() {
                     },
                     onCheckClick = {
                         gameRowStates[index].feedbackColors = checkColors(
-                            trueColors = trueColors,
+                            trueColors = trueColors.value,
                             selectedColors = gameRowStates[index].selectedColors
                         )
                         gameRowStates[index].clickable.value = false
@@ -163,6 +163,7 @@ fun GameScreen() {
                     gameRowStates.clear()
                     gameRowStates.add(GameRowState())
                     isGameFinished.value = false
+                    trueColors.value = selectRandomColors(allColors)
                 },
                 modifier = Modifier.padding(bottom = 10.dp)
             ) {
