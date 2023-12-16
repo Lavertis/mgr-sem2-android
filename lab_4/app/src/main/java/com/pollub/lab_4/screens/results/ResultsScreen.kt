@@ -1,4 +1,4 @@
-package com.pollub.lab_4
+package com.pollub.lab_4.screens.results
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

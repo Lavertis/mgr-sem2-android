@@ -1,4 +1,4 @@
-package com.pollub.lab_4
+package com.pollub.lab_4.screens.profile.validation
 
 class FormValidator {
     fun validateName(name: String, setFieldError: (String?) -> Unit) {

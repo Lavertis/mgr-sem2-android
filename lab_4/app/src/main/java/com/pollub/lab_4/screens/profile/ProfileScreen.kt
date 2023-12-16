@@ -1,99 +1,36 @@
-package com.pollub.lab_4
+package com.pollub.lab_4.screens.profile
 
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import com.pollub.lab_4.screens.profile.validation.FormValidator
+import com.pollub.lab_4.R
+import com.pollub.lab_4.screens.profile.composables.OutlinedTextFieldWithError
+import com.pollub.lab_4.screens.profile.composables.ProfileImageWithPicker
 import com.pollub.lab_4.ui.theme.Lab_4Theme
-
-@Composable
-private fun ProfileImageWithPicker(profileImageUri: Comparable<*>, selectImageOnClick: () -> Unit) {
-    Box {
-        AsyncImage(
-            model = profileImageUri,
-            contentDescription = "Profile image",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(100.dp)
-                .clip(CircleShape)
-                .align(Alignment.Center),
-        )
-        IconButton(
-            onClick = selectImageOnClick,
-            modifier = Modifier
-                .offset(x = 32.dp, y = (-32).dp)
-                .align(Alignment.TopEnd)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.baseline_image_search_24),
-                contentDescription = "Profile photo",
-                modifier = Modifier.size(24.dp),
-                contentScale = ContentScale.Crop
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun OutlinedTextFieldWithError(
-    state: MutableState<String>,
-    errorText: String?,
-    label: String?,
-    keyboardType: KeyboardType = KeyboardType.Text,
-) {
-    val isError = errorText != null
-    OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
-        value = state.value,
-        onValueChange = { state.value = it },
-        label = { Text(label ?: "") },
-        singleLine = true,
-        isError = isError,
-        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-        supportingText = { Text(if (isError && errorText != null) errorText else "") },
-        trailingIcon = { if (isError) Icon(Icons.Rounded.Warning, contentDescription = null) },
-    )
-}
 
 
 @Composable

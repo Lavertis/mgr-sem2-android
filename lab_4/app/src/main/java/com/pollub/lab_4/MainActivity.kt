@@ -16,6 +16,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.pollub.lab_4.screens.game.GameScreen
+import com.pollub.lab_4.screens.profile.ProfileScreen
+import com.pollub.lab_4.screens.results.ResultsScreen
 import com.pollub.lab_4.ui.theme.Lab_4Theme
 
 class MainActivity : ComponentActivity() {

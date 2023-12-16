@@ -1,4 +1,4 @@
-package com.pollub.lab_4
+package com.pollub.lab_4.screens.game.models
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
