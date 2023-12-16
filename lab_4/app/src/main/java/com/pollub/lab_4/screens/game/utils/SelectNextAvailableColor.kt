@@ -18,5 +18,5 @@ fun selectNextAvailableColor(
             return colors[i]
         }
     }
-    throw IllegalStateException("No color available")
+    return currentColor
 }

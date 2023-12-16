@@ -1,33 +1,28 @@
 package com.pollub.lab_4.screens.profile.validation
 
 class FormValidator {
-    fun validateName(name: String, setFieldError: (String?) -> Unit) {
-        when {
-            name.isBlank() -> setFieldError("Name cannot be empty")
-            else -> setFieldError(null)
+    fun validateName(name: String): String? {
+        return when {
+            name.isBlank() -> "Name cannot be empty"
+            else -> null
         }
     }
 
-    fun validateEmail(email: String, setFieldError: (String?) -> Unit) {
+    fun validateEmail(email: String): String? {
         val emailPattern = Regex("^[A-Za-z](.*)(@)(.+)(\\.)(.+)")
-        when {
-            email.isBlank() -> setFieldError("E-mail cannot be empty")
-            !emailPattern.matches(email) -> setFieldError("Invalid e-mail address")
-            else -> setFieldError(null)
+        return when {
+            email.isBlank() -> "E-mail cannot be empty"
+            !emailPattern.matches(email) -> "Invalid e-mail address"
+            else -> null
         }
     }
 
-    fun validateColorCount(
-        colorCount: String,
-        min: Int,
-        max: Int,
-        setFieldError: (String?) -> Unit
-    ) {
+    fun validateColorCount(colorCount: String, min: Int, max: Int): String? {
         if (min > max) throw IllegalArgumentException("min must be less than or equal to max")
-        when (colorCount.toIntOrNull()) {
-            null -> setFieldError("Please enter a number")
-            !in min..max -> setFieldError("Number of colors must be between 5 and 10")
-            else -> setFieldError(null)
+        return when (colorCount.toIntOrNull()) {
+            null -> "Please enter a number"
+            !in min..max -> "Number of colors must be between 5 and 10"
+            else -> null
         }
     }
 }

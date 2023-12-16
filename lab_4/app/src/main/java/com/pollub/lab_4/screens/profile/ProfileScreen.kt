@@ -43,19 +43,13 @@ fun ProfileScreen(onNextButtonClicked: (colorCount: Int) -> Unit) {
     val colorCount = rememberSaveable { mutableStateOf("") }
     val profileImageUri = rememberSaveable { mutableStateOf<Uri?>(null) }
 
-    fun setFieldError(fieldName: String, errorMessage: String? = null) {
-        errorText.value += (fieldName to errorMessage)
-    }
-
     fun validateFields(): Boolean {
         val formValidator = FormValidator()
-        formValidator.validateName(name.value) { setFieldError("name", it) }
-        formValidator.validateEmail(email.value) { setFieldError("email", it) }
-        formValidator.validateColorCount(
-            colorCount.value,
-            min = 5,
-            max = 10
-        ) { setFieldError("colorCount", it) }
+        errorText.value += ("name" to formValidator.validateName(name.value))
+        errorText.value += ("email" to formValidator.validateEmail(email.value))
+        errorText.value += ("colorCount" to formValidator.validateColorCount(
+            colorCount = colorCount.value, min = 5, max = 10
+        ))
 
         return errorText.value.values.all { it == null }
     }
