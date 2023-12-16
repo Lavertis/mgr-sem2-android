@@ -41,7 +41,7 @@ fun ProfileScreen(navigateToGameScreen: (colorCount: Int) -> Unit) {
             }
         })
     val onNextButtonClicked = {
-        if (profileForm.validate() || true) {
+        if (profileForm.validate() || true) { // TODO: remove true
             navigateToGameScreen(profileForm.colorCount.value.toInt())
         }
     }

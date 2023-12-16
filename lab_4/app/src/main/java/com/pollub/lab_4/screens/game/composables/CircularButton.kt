@@ -14,8 +14,7 @@ import androidx.compose.ui.unit.dp
 fun CircularButton(color: Color, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
     Button(
         onClick = onClick,
-        modifier = modifier
-            .background(color = MaterialTheme.colorScheme.background),
+        modifier = modifier.background(color = MaterialTheme.colorScheme.background),
         border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
         colors = ButtonDefaults.buttonColors(
             containerColor = color,

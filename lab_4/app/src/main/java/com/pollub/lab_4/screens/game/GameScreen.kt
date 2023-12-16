@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.pollub.lab_4.screens.game.composables.EndGameButtons
 import com.pollub.lab_4.screens.game.composables.GameRow
 import com.pollub.lab_4.screens.game.constants.CIRCLE_COLORS
 import com.pollub.lab_4.screens.game.models.GameRowState
@@ -34,8 +35,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun GameScreen(
     colorCount: Int,
-    onBackButtonClicked: () -> Unit,
-    onGoToResultsScreenButtonClicked: (attemptCount: Int) -> Unit
+    navigateToPreviousScreen: () -> Unit,
+    navigateToResultsScreen: (attemptCount: Int) -> Unit
 ) {
     val allColors = CIRCLE_COLORS.take(colorCount)
     val trueColors = remember { mutableStateOf(selectRandomColors(allColors)) }
@@ -45,7 +46,34 @@ fun GameScreen(
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+    val onSelectColorClick: (Int) -> Unit = { index ->
+        gameRowStates.last().selectedColors[index] = selectNextAvailableColor(
+            allColors,
+            gameRowStates.last().selectedColors,
+            gameRowStates.last().selectedColors[index]
+        )
+    }
+    val onCheckClick: () -> Unit = {
+        gameRowStates.last().feedbackColors = checkColors(
+            trueColors = trueColors.value,
+            selectedColors = gameRowStates.last().selectedColors
+        )
+        gameRowStates.last().clickable.value = false
+
+        if (gameRowStates.last().feedbackColors.all { it == Color.Red }) {
+            isGameFinished.value = true
+        } else {
+            gameRowStates.add(GameRowState())
+            coroutineScope.launch {
+                lazyListState.scrollToItem(gameRowStates.size - 1)
+            }
+        }
+    }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Text(
             text = "Attempts: ${gameRowStates.size}",
             style = MaterialTheme.typography.displayLarge,
@@ -63,59 +91,20 @@ fun GameScreen(
                     selectedColors = gameRowStates[index].selectedColors,
                     feedbackColors = gameRowStates[index].feedbackColors,
                     clickable = gameRowStates[index].clickable.value,
-                    onSelectColorClick = {
-                        gameRowStates[index].selectedColors[it] =
-                            selectNextAvailableColor(
-                                allColors,
-                                gameRowStates[index].selectedColors,
-                                gameRowStates[index].selectedColors[it]
-                            )
-                    },
-                    onCheckClick = {
-                        gameRowStates[index].feedbackColors = checkColors(
-                            trueColors = trueColors.value,
-                            selectedColors = gameRowStates[index].selectedColors
-                        )
-                        gameRowStates[index].clickable.value = false
-
-                        if (gameRowStates[index].feedbackColors.all { it == Color.Red }) {
-                            isGameFinished.value = true
-                        } else {
-                            gameRowStates.add(GameRowState())
-                            coroutineScope.launch {
-                                lazyListState.scrollToItem(gameRowStates.size - 1)
-                            }
-                        }
-                    }
+                    onSelectColorClick = { onSelectColorClick(it) },
+                    onCheckClick = onCheckClick
                 )
             }
         }
         if (isGameFinished.value) {
-            Row {
-                Button(
-                    onClick = {
-                        onGoToResultsScreenButtonClicked(gameRowStates.size)
-                    }
-                ) {
-                    Text(text = "High score table")
-                }
-                Spacer(modifier = Modifier.padding(horizontal = 10.dp))
-                Button(
-                    onClick = {
-//                    gameRowStates.clear()
-//                    gameRowStates.add(GameRowState())
-//                    isGameFinished.value = false
-//                    trueColors.value = selectRandomColors(allColors)
-                        onBackButtonClicked()
-                    },
-                    modifier = Modifier.padding(bottom = 10.dp)
-                ) {
-                    Text(text = "Logout")
-                }
-            }
+            EndGameButtons(
+                navigateToPreviousScreen = navigateToPreviousScreen,
+                navigateToResultsScreen = navigateToResultsScreen
+            )
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
@@ -123,8 +112,8 @@ fun GameScreenPreview() {
     Lab_4Theme {
         GameScreen(
             colorCount = 5,
-            onBackButtonClicked = {},
-            onGoToResultsScreenButtonClicked = {}
+            navigateToPreviousScreen = {},
+            navigateToResultsScreen = {}
         )
     }
 }

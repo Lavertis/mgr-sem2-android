@@ -63,12 +63,12 @@ fun NavigationGraph(navController: NavHostController) {
         ) { backStackEntry ->
             val colorCount = backStackEntry.arguments?.getInt("colorCount")
             GameScreen(
-                colorCount = colorCount ?: throw IllegalStateException("Color count not provided"),
-                onBackButtonClicked = {
+                colorCount = colorCount ?: throw IllegalStateException("Color count missing"),
+                navigateToPreviousScreen = {
                     navController.popBackStack()
                     // TODO: add form clearing
                 },
-                onGoToResultsScreenButtonClicked = { attemptCount: Int ->
+                navigateToResultsScreen = { attemptCount: Int ->
                     navController.navigate("resultsScreen/$attemptCount")
                 }
             )
@@ -77,9 +77,9 @@ fun NavigationGraph(navController: NavHostController) {
             route = "resultsScreen/{attemptCount}",
             arguments = listOf(navArgument("attemptCount") { type = NavType.IntType })
         ) { backStackEntry ->
-            val attemptCount = backStackEntry.arguments?.getInt("attemptCount")!!
+            val attemptCount = backStackEntry.arguments?.getInt("attemptCount")
             ResultsScreen(
-                attemptCount = attemptCount,
+                attemptCount = attemptCount ?: throw IllegalStateException("Attempt count missing"),
                 onLogoutButtonClicked = {
                     navController.popBackStack()
                     navController.popBackStack()

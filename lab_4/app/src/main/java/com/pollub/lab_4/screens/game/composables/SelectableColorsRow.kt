@@ -13,11 +13,7 @@ fun SelectableColorsRow(colors: List<Color>, clickAction: ((Int) -> Unit)?) {
     Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
         colors.forEachIndexed { index, color ->
             CircularButton(
-                onClick = {
-                    if (clickAction != null) {
-                        clickAction(index)
-                    }
-                },
+                onClick = { clickAction?.invoke(index) },
                 color = color,
                 modifier = Modifier.size(50.dp)
             )
