@@ -52,7 +52,7 @@ fun NavigationGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "profileScreen") {
         composable(route = "profileScreen") {
             ProfileScreen(
-                onNextButtonClicked = { colorCount ->
+                navigateToGameScreen = { colorCount ->
                     navController.navigate("gameScreen/$colorCount")
                 }
             )
