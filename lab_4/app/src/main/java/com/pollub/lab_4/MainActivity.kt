@@ -68,11 +68,6 @@ fun NavigationGraph(navController: NavHostController) {
                     navController.popBackStack()
                     // TODO: add form clearing
                 },
-                //nawigacja do Screen3 i przekazanie parametrów (Screen3 ma
-                //dwa obowiązkowe i jeden opcjonalny argument)
-                //przekazanie konkretnej wartości parametru opcjonalnego
-                //navController.navigate("screen3/1str/2?optionalArgument=3")
-                //użycie wartości domyślnej parametru opcjonalnego
                 onGoToResultsScreenButtonClicked = { attemptCount: Int ->
                     navController.navigate("resultsScreen/$attemptCount")
                 }

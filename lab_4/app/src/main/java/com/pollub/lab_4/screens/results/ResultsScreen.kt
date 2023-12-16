@@ -2,6 +2,7 @@ package com.pollub.lab_4.screens.results
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -17,11 +18,8 @@ import com.pollub.lab_4.ui.theme.Lab_4Theme
 
 
 @Composable
-fun ResultsScreen(
-    attemptCount: Int,
-    onLogoutButtonClicked: () -> Unit,
-) {
-    Column {
+fun ResultsScreen(attemptCount: Int, onLogoutButtonClicked: () -> Unit) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "Results",
             style = MaterialTheme.typography.displayLarge,

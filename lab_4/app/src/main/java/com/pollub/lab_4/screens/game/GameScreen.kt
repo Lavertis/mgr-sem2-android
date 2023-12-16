@@ -16,61 +16,20 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pollub.lab_4.screens.game.composables.GameRow
+import com.pollub.lab_4.screens.game.constants.CIRCLE_COLORS
 import com.pollub.lab_4.screens.game.models.GameRowState
+import com.pollub.lab_4.screens.game.utils.checkColors
+import com.pollub.lab_4.screens.game.utils.selectNextAvailableColor
+import com.pollub.lab_4.screens.game.utils.selectRandomColors
 import com.pollub.lab_4.ui.theme.Lab_4Theme
 import kotlinx.coroutines.launch
 
-fun selectRandomColors(colors: List<Color>): List<Color> {
-    return colors.shuffled().take(4)
-}
-
-fun selectNextAvailableColor(
-    colors: List<Color>,
-    selectedColors: List<Color>,
-    currentColor: Color
-): Color {
-    val currentIndex = colors.indexOf(currentColor)
-    for (i in currentIndex + 1 until colors.size) {
-        if (!selectedColors.contains(colors[i])) {
-            return colors[i]
-        }
-    }
-    for (i in 0 until currentIndex) {
-        if (!selectedColors.contains(colors[i])) {
-            return colors[i]
-        }
-    }
-    throw IllegalStateException("No color available")
-}
-
-fun checkColors(
-    trueColors: List<Color>,
-    selectedColors: List<Color>
-): SnapshotStateList<Color> {
-    val feedbackColors = mutableStateListOf<Color>()
-    for (i in trueColors.indices) {
-        if (trueColors[i] == selectedColors[i]) {
-            feedbackColors.add(Color.Red)
-        } else if (trueColors.contains(selectedColors[i])) {
-            feedbackColors.add(Color.Yellow)
-        } else {
-            feedbackColors.add(Color.White)
-        }
-    }
-    return feedbackColors
-}
-
-val AVAILABLE_COLORS = listOf(
-    Color.Red, Color.Green, Color.Blue, Color.Yellow, Color.Magenta, Color.Cyan,
-    Color.Black, Color.Gray, Color.LightGray, Color.DarkGray
-)
 
 @Composable
 fun GameScreen(
@@ -78,7 +37,7 @@ fun GameScreen(
     onBackButtonClicked: () -> Unit,
     onGoToResultsScreenButtonClicked: (attemptCount: Int) -> Unit
 ) {
-    val allColors = AVAILABLE_COLORS.take(colorCount)
+    val allColors = CIRCLE_COLORS.take(colorCount)
     val trueColors = remember { mutableStateOf(selectRandomColors(allColors)) }
     val gameRowStates = remember { mutableStateListOf(GameRowState()) }
     val isGameFinished = remember { mutableStateOf(true) } // TODO: change to false
