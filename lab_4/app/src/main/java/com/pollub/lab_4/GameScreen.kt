@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -87,13 +86,13 @@ val AVAILABLE_COLORS = listOf(
 @Composable
 fun GameScreen(
     colorCount: Int,
-    onGoBackButtonClicked: (Any) -> Boolean,
+    onBackButtonClicked: () -> Unit,
     onGoToScreen3ButtonClicked: () -> Unit
 ) {
     val allColors = AVAILABLE_COLORS.take(colorCount)
     val trueColors = remember { mutableStateOf(selectRandomColors(allColors)) }
     val gameRowStates = remember { mutableStateListOf(GameRowState()) }
-    val isGameFinished = remember { mutableStateOf(false) }
+    val isGameFinished = remember { mutableStateOf(true) } // TODO: change to false
 
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -146,14 +145,15 @@ fun GameScreen(
         if (isGameFinished.value) {
             Button(
                 onClick = {
-                    gameRowStates.clear()
-                    gameRowStates.add(GameRowState())
-                    isGameFinished.value = false
-                    trueColors.value = selectRandomColors(allColors)
+//                    gameRowStates.clear()
+//                    gameRowStates.add(GameRowState())
+//                    isGameFinished.value = false
+//                    trueColors.value = selectRandomColors(allColors)
+                    onBackButtonClicked()
                 },
                 modifier = Modifier.padding(bottom = 10.dp)
             ) {
-                Text(text = "Play again")
+                Text(text = "Logout")
             }
         }
     }

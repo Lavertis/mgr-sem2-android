@@ -23,7 +23,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Lab_4Theme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -66,31 +65,19 @@ fun NavigationGraph(navController: NavHostController) {
             // tutaj odczytujemy wartość parametru przekazanego ze Screen1
             val colorCount = backStackEntry.arguments?.getInt("colorCount")!!
             // dodajemy Screen2 i przekazujemy do niego wartość parametru
-            GameScreen(colorCount,
-                // obsługa zdarzeń związanych z nawigacją została „wyciągnięta”
-                // tutaj (ze względu na dostęp do kontrolera nawigacji)
-                // powrót ze Screen2 do Screen1
-                onGoBackButtonClicked =
-                { replyForScreen1 ->
-                    // ustawienie „wyniku” wykonania Screen2 (wynik pobierze Screen1)
-                    navController.previousBackStackEntry?.savedStateHandle?.set(
-                        "reply",
-                        replyForScreen1
-                    )
-                    // powrót tam skąd przyszliśmy
+            GameScreen(
+                colorCount = colorCount,
+                onBackButtonClicked = {
                     navController.popBackStack()
-                }
-            )
-            // przejście ze Screen2 do Screen3
-            {
+                    // TODO: add form clearing
+                },
                 //nawigacja do Screen3 i przekazanie parametrów (Screen3 ma
                 //dwa obowiązkowe i jeden opcjonalny argument)
-
                 //przekazanie konkretnej wartości parametru opcjonalnego
                 //navController.navigate("screen3/1str/2?optionalArgument=3")
                 //użycie wartości domyślnej parametru opcjonalnego
-                navController.navigate("screen3/1str/2")
-            }
+                onGoToScreen3ButtonClicked = { navController.navigate("screen3/1str/2") }
+            )
         }
     }
 }
