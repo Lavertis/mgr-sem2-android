@@ -87,7 +87,7 @@ val AVAILABLE_COLORS = listOf(
 fun GameScreen(
     colorCount: Int,
     onBackButtonClicked: () -> Unit,
-    onGoToScreen3ButtonClicked: () -> Unit
+    onGoToResultsScreenButtonClicked: (attemptCount: Int) -> Unit
 ) {
     val allColors = AVAILABLE_COLORS.take(colorCount)
     val trueColors = remember { mutableStateOf(selectRandomColors(allColors)) }
@@ -143,17 +143,27 @@ fun GameScreen(
             }
         }
         if (isGameFinished.value) {
-            Button(
-                onClick = {
+            Row {
+                Button(
+                    onClick = {
+                        onGoToResultsScreenButtonClicked(gameRowStates.size)
+                    }
+                ) {
+                    Text(text = "High score table")
+                }
+                Spacer(modifier = Modifier.padding(horizontal = 10.dp))
+                Button(
+                    onClick = {
 //                    gameRowStates.clear()
 //                    gameRowStates.add(GameRowState())
 //                    isGameFinished.value = false
 //                    trueColors.value = selectRandomColors(allColors)
-                    onBackButtonClicked()
-                },
-                modifier = Modifier.padding(bottom = 10.dp)
-            ) {
-                Text(text = "Logout")
+                        onBackButtonClicked()
+                    },
+                    modifier = Modifier.padding(bottom = 10.dp)
+                ) {
+                    Text(text = "Logout")
+                }
             }
         }
     }
@@ -247,19 +257,10 @@ fun GameRow(
 @Composable
 fun GameScreenPreview() {
     Lab_4Theme {
-//        GameScreen(colorCount, { replyForScreen1 ->
-//            //ustawienie „wyniku” wykonania Screen2 (wynik pobierze Screen1)
-//            navController.previousBackStackEntry?.savedStateHandle?.set("reply",replyForScreen1)
-//            //powrót tam skąd przyszliśmy
-//            navController.popBackStack()
-//        }) {
-//            //nawigacja do Screen3 i przekazanie parametrów (Screen3 ma
-//            //dwa obowiązkowe i jeden opcjonalny argument)
-//
-//            //przekazanie konkretnej wartości parametru opcjonalnego
-//            //navController.navigate("screen3/1str/2?optionalArgument=3")
-//            //użycie wartości domyślnej parametru opcjonalnego
-//            navController.navigate("screen3/1str/2")
-//        }
+        GameScreen(
+            colorCount = 5,
+            onBackButtonClicked = {},
+            onGoToResultsScreenButtonClicked = {}
+        )
     }
 }

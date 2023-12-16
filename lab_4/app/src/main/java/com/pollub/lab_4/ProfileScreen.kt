@@ -196,19 +196,6 @@ fun ProfileScreen(onNextButtonClicked: (colorCount: Int) -> Unit) {
 @Composable
 fun ProfileScreenPreview() {
     Lab_4Theme {
-//        ProfileScreen(colorCount, { replyForScreen1 ->
-//            // ustawienie „wyniku” wykonania Screen2 (wynik pobierze Screen1)
-//            navController.previousBackStackEntry?.savedStateHandle?.set("reply",replyForScreen1)
-//            // powrót tam skąd przyszliśmy
-//            navController.popBackStack()
-//        }) {
-//            //nawigacja do Screen3 i przekazanie parametrów (Screen3 ma
-//            //dwa obowiązkowe i jeden opcjonalny argument)
-//
-//            //przekazanie konkretnej wartości parametru opcjonalnego
-//            //navController.navigate("screen3/1str/2?optionalArgument=3")
-//            //użycie wartości domyślnej parametru opcjonalnego
-//            navController.navigate("screen3/1str/2")
-//        }
+        ProfileScreen(onNextButtonClicked = {})
     }
 }

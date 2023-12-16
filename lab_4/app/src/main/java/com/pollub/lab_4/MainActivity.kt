@@ -47,26 +47,20 @@ fun MainScreen() {
 @Composable
 fun NavigationGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "profileScreen") {
-        composable("profileScreen") { backStackEntry ->
-            // tutaj odczytujemy wartość parametru przekazanego ze Screen1
-//            val colorCount = backStackEntry.arguments?.getInt("colorCount")!!
-            // dodajemy Screen2 i przekazujemy do niego wartość parametru
+        composable(route = "profileScreen") {
             ProfileScreen(
-                onNextButtonClicked = { colorCount -> navController.navigate("gameScreen/$colorCount") }
+                onNextButtonClicked = { colorCount ->
+                    navController.navigate("gameScreen/$colorCount")
+                }
             )
         }
-
         composable(
-            // parametr podaje się w ścieżce/trasie
-            "gameScreen/{colorCount}",
-            // na liście określamy typy poszczególnych argumentów
+            route = "gameScreen/{colorCount}",
             arguments = listOf(navArgument("colorCount") { type = NavType.IntType })
         ) { backStackEntry ->
-            // tutaj odczytujemy wartość parametru przekazanego ze Screen1
-            val colorCount = backStackEntry.arguments?.getInt("colorCount")!!
-            // dodajemy Screen2 i przekazujemy do niego wartość parametru
+            val colorCount = backStackEntry.arguments?.getInt("colorCount")
             GameScreen(
-                colorCount = colorCount,
+                colorCount = colorCount ?: throw IllegalStateException("Color count not provided"),
                 onBackButtonClicked = {
                     navController.popBackStack()
                     // TODO: add form clearing
@@ -76,7 +70,22 @@ fun NavigationGraph(navController: NavHostController) {
                 //przekazanie konkretnej wartości parametru opcjonalnego
                 //navController.navigate("screen3/1str/2?optionalArgument=3")
                 //użycie wartości domyślnej parametru opcjonalnego
-                onGoToScreen3ButtonClicked = { navController.navigate("screen3/1str/2") }
+                onGoToResultsScreenButtonClicked = { attemptCount: Int ->
+                    navController.navigate("resultsScreen/$attemptCount")
+                }
+            )
+        }
+        composable(
+            route = "resultsScreen/{attemptCount}",
+            arguments = listOf(navArgument("attemptCount") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val attemptCount = backStackEntry.arguments?.getInt("attemptCount")!!
+            ResultsScreen(
+                attemptCount = attemptCount,
+                onLogoutButtonClicked = {
+                    navController.popBackStack()
+                    navController.popBackStack()
+                }
             )
         }
     }
