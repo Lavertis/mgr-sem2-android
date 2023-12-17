@@ -11,16 +11,16 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun EndGameButtons(
-    navigateToPreviousScreen: () -> Unit,
-    navigateToResultsScreen: (attemptCount: Int) -> Unit
+    onHighScoreTableButtonClick: () -> Unit,
+    onLogoutButtonClick: () -> Unit
 ) {
     Row {
-        Button(onClick = { navigateToResultsScreen(5) }) {
+        Button(onClick = onHighScoreTableButtonClick) {
             Text(text = "High score table")
         }
         Spacer(modifier = Modifier.padding(horizontal = 10.dp))
         Button(
-            onClick = navigateToPreviousScreen,
+            onClick = onLogoutButtonClick,
             modifier = Modifier.padding(bottom = 10.dp)
         ) {
             Text(text = "Logout")

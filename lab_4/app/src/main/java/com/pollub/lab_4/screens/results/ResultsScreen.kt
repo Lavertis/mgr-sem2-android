@@ -18,7 +18,11 @@ import com.pollub.lab_4.ui.theme.Lab_4Theme
 
 
 @Composable
-fun ResultsScreen(attemptCount: Int, onLogoutButtonClicked: () -> Unit) {
+fun ResultsScreen(
+    attemptCount: Int,
+    navigateToGameScreen: () -> Unit,
+    navigateToProfileScreen: () -> Unit
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -27,8 +31,8 @@ fun ResultsScreen(attemptCount: Int, onLogoutButtonClicked: () -> Unit) {
         ResultsHeader()
         Spacer(modifier = Modifier.height(16.dp))
         ResultsSummary(attemptCount = attemptCount)
-        PlayAgainButton()
-        LogoutButton(onLogoutButtonClicked = onLogoutButtonClicked)
+        PlayAgainButton(onClick = navigateToGameScreen)
+        LogoutButton(onClick = navigateToProfileScreen)
     }
 }
 
@@ -37,6 +41,6 @@ fun ResultsScreen(attemptCount: Int, onLogoutButtonClicked: () -> Unit) {
 @Composable
 fun ResultsScreenPreview() {
     Lab_4Theme {
-        ResultsScreen(5) {}
+        ResultsScreen(attemptCount = 5, navigateToGameScreen = {}, navigateToProfileScreen = {})
     }
 }

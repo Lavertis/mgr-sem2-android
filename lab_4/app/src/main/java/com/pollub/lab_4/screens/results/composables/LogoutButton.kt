@@ -10,9 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LogoutButton(onLogoutButtonClicked: () -> Unit) {
+fun LogoutButton(onClick: () -> Unit) {
     Button(
-        onClick = { onLogoutButtonClicked() },
+        onClick = onClick,
         modifier = Modifier.padding(top = 16.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,

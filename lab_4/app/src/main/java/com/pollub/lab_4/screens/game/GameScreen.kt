@@ -2,13 +2,10 @@ package com.pollub.lab_4.screens.game
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,7 +32,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun GameScreen(
     colorCount: Int,
-    navigateToPreviousScreen: () -> Unit,
+    navigateToProfileScreen: () -> Unit,
     navigateToResultsScreen: (attemptCount: Int) -> Unit
 ) {
     val allColors = CIRCLE_COLORS.take(colorCount)
@@ -48,9 +45,9 @@ fun GameScreen(
 
     val onSelectColorClick: (Int) -> Unit = { index ->
         gameRowStates.last().selectedColors[index] = selectNextAvailableColor(
-            allColors,
-            gameRowStates.last().selectedColors,
-            gameRowStates.last().selectedColors[index]
+            colors = allColors,
+            selectedColors = gameRowStates.last().selectedColors,
+            currentColor = gameRowStates.last().selectedColors[index]
         )
     }
     val onCheckClick: () -> Unit = {
@@ -98,8 +95,8 @@ fun GameScreen(
         }
         if (isGameFinished.value) {
             EndGameButtons(
-                navigateToPreviousScreen = navigateToPreviousScreen,
-                navigateToResultsScreen = navigateToResultsScreen
+                onHighScoreTableButtonClick = { navigateToResultsScreen(gameRowStates.size) },
+                onLogoutButtonClick = navigateToProfileScreen
             )
         }
     }
@@ -110,10 +107,6 @@ fun GameScreen(
 @Composable
 fun GameScreenPreview() {
     Lab_4Theme {
-        GameScreen(
-            colorCount = 5,
-            navigateToPreviousScreen = {},
-            navigateToResultsScreen = {}
-        )
+        GameScreen(colorCount = 5, navigateToProfileScreen = {}, navigateToResultsScreen = {})
     }
 }
