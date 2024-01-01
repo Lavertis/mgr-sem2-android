@@ -55,19 +55,23 @@ fun MainScreen() {
 
 @Composable
 fun NavigationGraph(navController: NavHostController) {
+    val transitionDuration = 1000
+    val enterTransitionEasing = EaseIn
+    val exitTransitionEasing = EaseOut
+
     NavHost(navController = navController, startDestination = "profileScreen") {
         composable(
             route = "profileScreen",
             enterTransition = {
                 fadeIn() + slideIntoContainer(
                     towards = AnimatedContentTransitionScope.SlideDirection.Start,
-                    animationSpec = tween(2000, easing = EaseIn)
+                    animationSpec = tween(transitionDuration, easing = enterTransitionEasing)
                 )
             },
             exitTransition = {
                 fadeOut() + slideOutOfContainer(
                     towards = AnimatedContentTransitionScope.SlideDirection.End,
-                    animationSpec = tween(2000, easing = EaseOut)
+                    animationSpec = tween(transitionDuration, easing = exitTransitionEasing)
                 )
             }
         ) {
@@ -83,13 +87,13 @@ fun NavigationGraph(navController: NavHostController) {
             enterTransition = {
                 fadeIn() + slideIntoContainer(
                     towards = AnimatedContentTransitionScope.SlideDirection.Start,
-                    animationSpec = tween(2000, easing = EaseIn)
+                    animationSpec = tween(transitionDuration, easing = enterTransitionEasing)
                 )
             },
             exitTransition = {
                 fadeOut() + slideOutOfContainer(
                     towards = AnimatedContentTransitionScope.SlideDirection.End,
-                    animationSpec = tween(2000, easing = EaseOut)
+                    animationSpec = tween(transitionDuration, easing = exitTransitionEasing)
                 )
             }
         ) { backStackEntry ->
@@ -108,13 +112,13 @@ fun NavigationGraph(navController: NavHostController) {
             enterTransition = {
                 fadeIn() + slideIntoContainer(
                     towards = AnimatedContentTransitionScope.SlideDirection.Start,
-                    animationSpec = tween(2000, easing = EaseIn)
+                    animationSpec = tween(transitionDuration, easing = enterTransitionEasing)
                 )
             },
             exitTransition = {
                 fadeOut() + slideOutOfContainer(
                     towards = AnimatedContentTransitionScope.SlideDirection.End,
-                    animationSpec = tween(2000, easing = EaseOut)
+                    animationSpec = tween(transitionDuration, easing = exitTransitionEasing)
                 )
             }
         ) { backStackEntry ->
