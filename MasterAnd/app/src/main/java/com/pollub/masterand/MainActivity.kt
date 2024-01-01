@@ -3,6 +3,12 @@ package com.pollub.masterand
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -50,7 +56,21 @@ fun MainScreen() {
 @Composable
 fun NavigationGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "profileScreen") {
-        composable(route = "profileScreen") {
+        composable(
+            route = "profileScreen",
+            enterTransition = {
+                fadeIn() + slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Start,
+                    animationSpec = tween(2000, easing = EaseIn)
+                )
+            },
+            exitTransition = {
+                fadeOut() + slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.End,
+                    animationSpec = tween(2000, easing = EaseOut)
+                )
+            }
+        ) {
             ProfileScreen(
                 navigateToGameScreen = { colorCount ->
                     navController.navigate("gameScreen/$colorCount")
@@ -59,7 +79,19 @@ fun NavigationGraph(navController: NavHostController) {
         }
         composable(
             route = "gameScreen/{colorCount}",
-            arguments = listOf(navArgument("colorCount") { type = NavType.IntType })
+            arguments = listOf(navArgument("colorCount") { type = NavType.IntType }),
+            enterTransition = {
+                fadeIn() + slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Start,
+                    animationSpec = tween(2000, easing = EaseIn)
+                )
+            },
+            exitTransition = {
+                fadeOut() + slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.End,
+                    animationSpec = tween(2000, easing = EaseOut)
+                )
+            }
         ) { backStackEntry ->
             val colorCount = backStackEntry.arguments?.getInt("colorCount")
             GameScreen(
@@ -72,7 +104,19 @@ fun NavigationGraph(navController: NavHostController) {
         }
         composable(
             route = "resultsScreen/{attemptCount}",
-            arguments = listOf(navArgument("attemptCount") { type = NavType.IntType })
+            arguments = listOf(navArgument("attemptCount") { type = NavType.IntType }),
+            enterTransition = {
+                fadeIn() + slideIntoContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.Start,
+                    animationSpec = tween(2000, easing = EaseIn)
+                )
+            },
+            exitTransition = {
+                fadeOut() + slideOutOfContainer(
+                    towards = AnimatedContentTransitionScope.SlideDirection.End,
+                    animationSpec = tween(2000, easing = EaseOut)
+                )
+            }
         ) { backStackEntry ->
             val attemptCount = backStackEntry.arguments?.getInt("attemptCount")
             ResultsScreen(
