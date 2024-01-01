@@ -3,6 +3,12 @@ package com.pollub.masterand.screens.profile
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,9 +22,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,6 +54,17 @@ fun ProfileScreen(navigateToGameScreen: (colorCount: Int) -> Unit) {
         }
     }
 
+    val infiniteScaleAnimation = rememberInfiniteTransition(label = "infiniteScaleAnimation")
+    val titleScale by infiniteScaleAnimation.animateFloat(
+        initialValue = 1.0f,
+        targetValue = 1.2f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "titleScale"
+    )
+
     return Column(
         modifier = Modifier
             .fillMaxSize()
@@ -57,7 +76,9 @@ fun ProfileScreen(navigateToGameScreen: (colorCount: Int) -> Unit) {
         Text(
             text = "MasterAnd",
             style = MaterialTheme.typography.displayLarge,
-            modifier = Modifier.padding(bottom = 48.dp)
+            modifier = Modifier
+                .padding(bottom = 48.dp)
+                .graphicsLayer(scaleX = titleScale, scaleY = titleScale)
         )
         ProfileImageWithPicker(
             profileImageUri = profileForm.profileImageUri.value
