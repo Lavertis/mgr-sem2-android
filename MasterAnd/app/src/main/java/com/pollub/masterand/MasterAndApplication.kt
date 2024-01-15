@@ -1,8 +1,8 @@
 package com.pollub.masterand
 
 import android.app.Application
-import com.pollub.masterand.db.AppContainer
-import com.pollub.masterand.db.AppDataContainer
+import com.pollub.masterand.containers.AppContainer
+import com.pollub.masterand.containers.AppDataContainer
 
 
 class MasterAndApplication : Application() {

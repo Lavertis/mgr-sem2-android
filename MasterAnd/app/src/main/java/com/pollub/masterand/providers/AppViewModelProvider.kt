@@ -1,10 +1,13 @@
-package com.pollub.masterand.view_models
+package com.pollub.masterand.providers
 
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.pollub.masterand.MasterAndApplication
+import com.pollub.masterand.view_models.GameViewModel
+import com.pollub.masterand.view_models.ProfileViewModel
+import com.pollub.masterand.view_models.ResultsViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
@@ -16,6 +19,9 @@ object AppViewModelProvider {
                 masterAndApplication().container.playersRepository,
                 masterAndApplication().container.scoresRepository
             )
+        }
+        initializer {
+            ResultsViewModel(masterAndApplication().container.playerScoresRepository)
         }
     }
 }

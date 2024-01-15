@@ -36,11 +36,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pollub.masterand.R
+import com.pollub.masterand.providers.AppViewModelProvider
 import com.pollub.masterand.screens.profile.composables.OutlinedTextFieldWithError
 import com.pollub.masterand.screens.profile.composables.ProfileImageWithPicker
 import com.pollub.masterand.screens.profile.form.ProfileFormValidator
 import com.pollub.masterand.ui.theme.MasterAndTheme
-import com.pollub.masterand.view_models.AppViewModelProvider
 import com.pollub.masterand.view_models.ProfileViewModel
 import kotlinx.coroutines.launch
 
