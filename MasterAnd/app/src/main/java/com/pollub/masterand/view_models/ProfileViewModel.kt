@@ -3,7 +3,7 @@ package com.pollub.masterand.view_models
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.pollub.masterand.db.entities.Player
-import com.pollub.masterand.db.repositories.PlayersRepository
+import com.pollub.masterand.db.repositories.players.PlayersRepository
 
 class ProfileViewModel(private var playersRepository: PlayersRepository) : ViewModel() {
     var id = mutableStateOf(0L)

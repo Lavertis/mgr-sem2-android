@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.pollub.masterand.db.dao.PlayerDao
 import com.pollub.masterand.db.dao.PlayerScoreDao
+import com.pollub.masterand.db.dao.ScoreDao
 import com.pollub.masterand.db.entities.Player
 import com.pollub.masterand.db.entities.Score
 
@@ -13,6 +14,7 @@ import com.pollub.masterand.db.entities.Score
 abstract class HighScoreDatabase : RoomDatabase() {
     abstract fun playerDao(): PlayerDao
     abstract fun playerScoreDao(): PlayerScoreDao
+    abstract fun scoreDao(): ScoreDao
 
     companion object {
         @Volatile

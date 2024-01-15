@@ -11,6 +11,12 @@ object AppViewModelProvider {
         initializer {
             ProfileViewModel(masterAndApplication().container.playersRepository)
         }
+        initializer {
+            GameViewModel(
+                masterAndApplication().container.playersRepository,
+                masterAndApplication().container.scoresRepository
+            )
+        }
     }
 }
 

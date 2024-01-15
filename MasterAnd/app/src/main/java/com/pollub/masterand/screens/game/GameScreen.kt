@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pollub.masterand.screens.game.composables.EndGameButtons
 import com.pollub.masterand.screens.game.composables.GameRow
 import com.pollub.masterand.screens.game.constants.CIRCLE_COLORS
@@ -26,6 +27,8 @@ import com.pollub.masterand.screens.game.utils.checkColors
 import com.pollub.masterand.screens.game.utils.selectNextAvailableColor
 import com.pollub.masterand.screens.game.utils.selectRandomColors
 import com.pollub.masterand.ui.theme.MasterAndTheme
+import com.pollub.masterand.view_models.AppViewModelProvider
+import com.pollub.masterand.view_models.GameViewModel
 import kotlinx.coroutines.launch
 
 
@@ -33,7 +36,8 @@ import kotlinx.coroutines.launch
 fun GameScreen(
     colorCount: Int,
     navigateToProfileScreen: () -> Unit,
-    navigateToResultsScreen: (attemptCount: Int) -> Unit
+    navigateToResultsScreen: (attemptCount: Int) -> Unit,
+    viewModel: GameViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val allColors = CIRCLE_COLORS.take(colorCount)
     val trueColors = remember { mutableStateOf(selectRandomColors(allColors)) }
@@ -95,7 +99,13 @@ fun GameScreen(
         }
         if (isGameFinished.value) {
             EndGameButtons(
-                onHighScoreTableButtonClick = { navigateToResultsScreen(gameRowStates.size) },
+                onHighScoreTableButtonClick = {
+                    viewModel.score.longValue = gameRowStates.size.toLong()
+                    coroutineScope.launch {
+                        viewModel.savePlayerScore()
+                    }
+                    navigateToResultsScreen(gameRowStates.size)
+                },
                 onLogoutButtonClick = navigateToProfileScreen
             )
         }
