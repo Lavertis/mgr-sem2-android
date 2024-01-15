@@ -1,5 +1,6 @@
 package com.pollub.masterand.screens.profile
 
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,34 +24,58 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pollub.masterand.R
 import com.pollub.masterand.screens.profile.composables.OutlinedTextFieldWithError
 import com.pollub.masterand.screens.profile.composables.ProfileImageWithPicker
-import com.pollub.masterand.screens.profile.form.ProfileForm
+import com.pollub.masterand.screens.profile.form.ProfileFormValidator
 import com.pollub.masterand.ui.theme.MasterAndTheme
+import com.pollub.masterand.view_models.AppViewModelProvider
+import com.pollub.masterand.view_models.ProfileViewModel
+import kotlinx.coroutines.launch
 
 
 @Composable
-fun ProfileScreen(navigateToGameScreen: (colorCount: Int) -> Unit) {
+fun ProfileScreen(
+    navigateToGameScreen: (colorCount: Int) -> Unit,
+    viewModel: ProfileViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
+    val coroutineScope = rememberCoroutineScope()
     val verticalSpaceBetweenFields = 12.dp
-    val profileForm = remember { ProfileForm() }
+
+    val validator = remember { ProfileFormValidator() }
+    val colorCount = rememberSaveable { mutableStateOf("") }
+    val profileImageUri = rememberSaveable { mutableStateOf<Uri?>(null) }
+
     val imagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { selectedUri ->
             if (selectedUri != null) {
-                profileForm.profileImageUri.value = selectedUri
+                profileImageUri.value = selectedUri
             }
         })
+
     val onNextButtonClicked = {
-        if (profileForm.validate() || true) { // TODO: remove true
-            navigateToGameScreen(profileForm.colorCount.value.toInt())
+        val validationResult = validator.validate(
+            viewModel.name.value,
+            viewModel.email.value,
+            colorCount.value
+        )
+        if (validationResult) {
+            coroutineScope.launch {
+                viewModel.savePlayer()
+            }
+            navigateToGameScreen(colorCount.value.toInt())
         }
     }
 
@@ -81,8 +106,7 @@ fun ProfileScreen(navigateToGameScreen: (colorCount: Int) -> Unit) {
                 .graphicsLayer(scaleX = titleScale, scaleY = titleScale)
         )
         ProfileImageWithPicker(
-            profileImageUri = profileForm.profileImageUri.value
-                ?: R.drawable.baseline_question_mark_24
+            profileImageUri = profileImageUri.value ?: R.drawable.baseline_question_mark_24
         ) {
             imagePicker.launch(
                 PickVisualMediaRequest(
@@ -92,22 +116,25 @@ fun ProfileScreen(navigateToGameScreen: (colorCount: Int) -> Unit) {
         }
         Spacer(modifier = Modifier.height(verticalSpaceBetweenFields))
         OutlinedTextFieldWithError(
-            state = profileForm.name,
-            errorText = profileForm.errorText.value["name"],
+            state = viewModel.name,
+            errorText = validator.nameError,
+            onChange = { validator.nameError = null },
             label = "Name",
             keyboardType = KeyboardType.Text
         )
         Spacer(modifier = Modifier.height(verticalSpaceBetweenFields))
         OutlinedTextFieldWithError(
-            state = profileForm.email,
-            errorText = profileForm.errorText.value["email"],
+            state = viewModel.email,
+            errorText = validator.emailError,
+            onChange = { validator.emailError = null },
             label = "E-mail",
             keyboardType = KeyboardType.Email
         )
         Spacer(modifier = Modifier.height(verticalSpaceBetweenFields))
         OutlinedTextFieldWithError(
-            state = profileForm.colorCount,
-            errorText = profileForm.errorText.value["colorCount"],
+            state = colorCount,
+            errorText = validator.colorCountError,
+            onChange = { validator.colorCountError = null },
             label = "Number of colors",
             keyboardType = KeyboardType.Number
         )

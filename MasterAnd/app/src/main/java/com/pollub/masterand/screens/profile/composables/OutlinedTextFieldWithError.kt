@@ -17,13 +17,17 @@ fun OutlinedTextFieldWithError(
     state: MutableState<String>,
     errorText: String?,
     label: String?,
+    onChange: () -> Unit = {},
     keyboardType: KeyboardType = KeyboardType.Text,
 ) {
     val isError = errorText != null
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = state.value,
-        onValueChange = { state.value = it },
+        onValueChange = {
+            state.value = it
+            onChange()
+        },
         label = { Text(label ?: "") },
         singleLine = true,
         isError = isError,
