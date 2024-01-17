@@ -8,7 +8,8 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 @HiltViewModel
-class ResultsViewModel @Inject constructor(val playerScoresRepository: PlayerScoresRepository) : ViewModel() {
+class ResultsViewModel @Inject constructor(val playerScoresRepository: PlayerScoresRepository) :
+    ViewModel() {
 
     fun loadPlayerScores(): Flow<List<PlayerWithScore>> {
         return playerScoresRepository.loadPlayersWithScores()

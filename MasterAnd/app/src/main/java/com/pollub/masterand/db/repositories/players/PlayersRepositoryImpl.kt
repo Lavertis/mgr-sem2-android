@@ -8,7 +8,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PlayersRepositoryImpl @Inject constructor(private val playerDao: PlayerDao) : PlayersRepository {
+class PlayersRepositoryImpl @Inject constructor(private val playerDao: PlayerDao) :
+    PlayersRepository {
     private val currentPlayerId = MutableLiveData<Long>()
 
     override fun getCurrentPlayerId(): LiveData<Long> = currentPlayerId

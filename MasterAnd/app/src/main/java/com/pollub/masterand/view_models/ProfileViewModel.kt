@@ -8,7 +8,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(private var playersRepository: PlayersRepository) : ViewModel() {
+class ProfileViewModel @Inject constructor(private var playersRepository: PlayersRepository) :
+    ViewModel() {
     var id = mutableStateOf(0L)
     val name = mutableStateOf("")
     val email = mutableStateOf("")
