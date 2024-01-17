@@ -18,12 +18,6 @@ interface PlayerDao {
     @Query("SELECT * FROM players WHERE id = :id")
     suspend fun getPlayersById(id: Long): List<Player>
 
-//    @Query("SELECT * FROM players WHERE id = :id")
-//    fun getPlayerStream(id: Int): Flow<Player>
-//
-//    @Query("SELECT * FROM players")
-//    fun getAllPlayersStream(): Flow<List<Player>>
-
     @Query("SELECT * FROM players WHERE email = :email")
     suspend fun getPlayersByEmail(email: String): List<Player>
 }
