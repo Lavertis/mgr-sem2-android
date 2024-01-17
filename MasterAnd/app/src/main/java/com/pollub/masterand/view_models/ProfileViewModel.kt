@@ -4,8 +4,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.pollub.masterand.db.entities.Player
 import com.pollub.masterand.db.repositories.players.PlayersRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class ProfileViewModel(private var playersRepository: PlayersRepository) : ViewModel() {
+@HiltViewModel
+class ProfileViewModel @Inject constructor(private var playersRepository: PlayersRepository) : ViewModel() {
     var id = mutableStateOf(0L)
     val name = mutableStateOf("")
     val email = mutableStateOf("")

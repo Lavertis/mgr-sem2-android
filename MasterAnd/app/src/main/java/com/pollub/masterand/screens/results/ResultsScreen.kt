@@ -15,9 +15,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+//import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pollub.masterand.db.entities.PlayerWithScore
-import com.pollub.masterand.providers.AppViewModelProvider
+//import com.pollub.masterand.providers.AppViewModelProvider
 import com.pollub.masterand.screens.results.composables.LogoutButton
 import com.pollub.masterand.screens.results.composables.PlayAgainButton
 import com.pollub.masterand.screens.results.composables.ResultsHeader
@@ -32,7 +33,8 @@ fun ResultsScreen(
     attemptCount: Int,
     navigateToGameScreen: () -> Unit,
     navigateToProfileScreen: () -> Unit,
-    viewModel: ResultsViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: ResultsViewModel = hiltViewModel<ResultsViewModel>()
+//    viewModel: ResultsViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val playersFlow = viewModel.loadPlayerScores()
     var playerScores by remember { mutableStateOf(emptyList<PlayerWithScore>()) }

@@ -4,8 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.pollub.masterand.db.dao.PlayerDao
 import com.pollub.masterand.db.entities.Player
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class PlayersRepositoryImpl(private val playerDao: PlayerDao) : PlayersRepository {
+@Singleton
+class PlayersRepositoryImpl @Inject constructor(private val playerDao: PlayerDao) : PlayersRepository {
     private val currentPlayerId = MutableLiveData<Long>()
 
     override fun getCurrentPlayerId(): LiveData<Long> = currentPlayerId

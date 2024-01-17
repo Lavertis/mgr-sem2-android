@@ -5,8 +5,11 @@ import androidx.lifecycle.ViewModel
 import com.pollub.masterand.db.entities.Score
 import com.pollub.masterand.db.repositories.players.PlayersRepository
 import com.pollub.masterand.db.repositories.scores.ScoresRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class GameViewModel(
+@HiltViewModel
+class GameViewModel @Inject constructor(
     playersRepository: PlayersRepository,
     private val scoresRepository: ScoresRepository
 ) : ViewModel() {

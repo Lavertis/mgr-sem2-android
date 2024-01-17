@@ -34,9 +34,10 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+//import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pollub.masterand.R
-import com.pollub.masterand.providers.AppViewModelProvider
+//import com.pollub.masterand.providers.AppViewModelProvider
 import com.pollub.masterand.screens.profile.composables.OutlinedTextFieldWithError
 import com.pollub.masterand.screens.profile.composables.ProfileImageWithPicker
 import com.pollub.masterand.screens.profile.form.ProfileFormValidator
@@ -48,7 +49,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProfileScreen(
     navigateToGameScreen: (colorCount: Int) -> Unit,
-    viewModel: ProfileViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: ProfileViewModel = hiltViewModel<ProfileViewModel>()
+//    viewModel: ProfileViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
     val verticalSpaceBetweenFields = 12.dp

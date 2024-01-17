@@ -26,7 +26,9 @@ import com.pollub.masterand.screens.game.GameScreen
 import com.pollub.masterand.screens.profile.ProfileScreen
 import com.pollub.masterand.screens.results.ResultsScreen
 import com.pollub.masterand.ui.theme.MasterAndTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

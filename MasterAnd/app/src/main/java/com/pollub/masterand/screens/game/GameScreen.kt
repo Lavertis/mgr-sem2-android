@@ -18,8 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.pollub.masterand.providers.AppViewModelProvider
+import androidx.hilt.navigation.compose.hiltViewModel
+//import androidx.lifecycle.viewmodel.compose.viewModel
+//import com.pollub.masterand.providers.AppViewModelProvider
 import com.pollub.masterand.screens.game.composables.EndGameButtons
 import com.pollub.masterand.screens.game.composables.GameRow
 import com.pollub.masterand.screens.game.constants.CIRCLE_COLORS
@@ -37,7 +38,8 @@ fun GameScreen(
     colorCount: Int,
     navigateToProfileScreen: () -> Unit,
     navigateToResultsScreen: (attemptCount: Int) -> Unit,
-    viewModel: GameViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: GameViewModel = hiltViewModel<GameViewModel>()
+//    viewModel: GameViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val allColors = CIRCLE_COLORS.take(colorCount)
     val trueColors = remember { mutableStateOf(selectRandomColors(allColors)) }
