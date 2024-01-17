@@ -42,7 +42,7 @@ fun GameScreen(
     val allColors = CIRCLE_COLORS.take(colorCount)
     val trueColors = remember { mutableStateOf(selectRandomColors(allColors)) }
     val gameRowStates = remember { mutableStateListOf(GameRowState()) }
-    val isGameFinished = remember { mutableStateOf(true) } // TODO: change to false
+    val isGameFinished = remember { mutableStateOf(false) }
 
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
